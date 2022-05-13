@@ -89,18 +89,21 @@ func generatePlayer(position: Point) -> BreakoutGameEffect {
 
 func generateBlocks() -> BreakoutGameEffect {
     var effects: [BreakoutGameEffect] = []
-    for row in 0..<4 {
-        for col in 0..<8 {
+    
+    let blockWidth = BreakoutConstants.screenSize.width / Double(BreakoutConstants.blockCols) - 10
+    
+    for row in 0..<BreakoutConstants.blockRows {
+        for col in 0..<BreakoutConstants.blockCols {
             let blockId = "block-\(row)-\(col)"
             let shape = ShapeComponent(entity: blockId, shape: .polygon(Path(points: [
                 Point(x: 0, y: 0),
-                Point(x: BreakoutConstants.blockSize.width, y: 0),
-                Point(x: BreakoutConstants.blockSize.width, y: BreakoutConstants.blockSize.height),
+                Point(x: blockWidth, y: 0),
+                Point(x: blockWidth, y: BreakoutConstants.blockSize.height),
                 Point(x: 0, y: BreakoutConstants.blockSize.height)
             ])))
             let transform = TransformComponent(
                 entity: blockId,
-                position: Point(x: Double(col * 50) + 50, y: Double(row * 20) + 400)
+                position: Point(x: 5 + Double(col) * (blockWidth + 10), y: Double(row * 20) + 400)
             )
             effects.append(.many([
                 .system(.addEntity(blockId, ["block"])),

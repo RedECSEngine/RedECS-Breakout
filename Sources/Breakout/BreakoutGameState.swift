@@ -4,8 +4,11 @@ import RedECSRenderingComponents
 import Geometry
 
 public enum BreakoutConstants {
+    static let screenSize: Size = .init(width: 320, height: 480)
     static let paddleSize: Size = .init(width: 50, height: 10)
     static let blockSize: Size = .init(width: 30, height: 10)
+    static let blockRows: Int = 4
+    static let blockCols: Int = 8
 }
 
 public struct BreakoutGameState: GameState {
@@ -21,7 +24,7 @@ public struct BreakoutGameState: GameState {
     var lastDelta: Double = 0
     var lastInputLocation: Point? = nil
     
-    public var screenSize: Size = .init(width: 480, height: 480)
+    public var screenSize: Size = BreakoutConstants.screenSize
      
     /**
         
