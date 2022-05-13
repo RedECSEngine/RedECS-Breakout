@@ -70,7 +70,7 @@ func generatePlayer(position: Point) -> BreakoutGameEffect {
         ]))
     )
     let transform = TransformComponent(entity: playerId, position: position)
-    let movement = MovementComponent(entity: playerId, velocity: .zero, travelSpeed: 2)
+    let movement = MovementComponent(entity: playerId, velocity: .zero, travelSpeed: BreakoutConstants.paddleSpeed)
     let keyboard = KeyboardInputComponent<BreakoutGameAction>(
         entity: playerId,
         keyMap: [
@@ -90,7 +90,8 @@ func generatePlayer(position: Point) -> BreakoutGameEffect {
 func generateBlocks() -> BreakoutGameEffect {
     var effects: [BreakoutGameEffect] = []
     
-    let blockWidth = BreakoutConstants.screenSize.width / Double(BreakoutConstants.blockCols) - 10
+    let space: Double = 10
+    let blockWidth = BreakoutConstants.screenSize.width / Double(BreakoutConstants.blockCols) - space
     
     for row in 0..<BreakoutConstants.blockRows {
         for col in 0..<BreakoutConstants.blockCols {
@@ -103,7 +104,10 @@ func generateBlocks() -> BreakoutGameEffect {
             ])))
             let transform = TransformComponent(
                 entity: blockId,
-                position: Point(x: 5 + Double(col) * (blockWidth + 10), y: Double(row * 20) + 400)
+                position: Point(
+                    x: 5 + Double(col) * (blockWidth + space),
+                    y: Double(row * 20) + 400
+                )
             )
             effects.append(.many([
                 .system(.addEntity(blockId, ["block"])),
@@ -117,9 +121,19 @@ func generateBlocks() -> BreakoutGameEffect {
 
 func generateBall(position: Point, velocity: Point) -> BreakoutGameEffect {
     let ballId: EntityId = "\(Int.random(in: 1..<Int.max))ball"
-    let shape = ShapeComponent(entity: ballId, shape: .circle(.init(radius: 5)))
-    let transform = TransformComponent(entity: ballId, position: position)
-    let movement = MovementComponent(entity: ballId, velocity: .zero, travelSpeed: 2)
+    let shape = ShapeComponent(
+        entity: ballId,
+        shape: .circle(.init(radius: BreakoutConstants.ballRadius))
+    )
+    let transform = TransformComponent(
+        entity: ballId,
+        position: position
+    )
+    let movement = MovementComponent(
+        entity: ballId,
+        velocity: .zero,
+        travelSpeed: BreakoutConstants.ballSpeed
+    )
     let momentum = MomentumComponent(entity: ballId, velocity: velocity)
     return .many([
         .system(.addEntity(ballId, ["ball"])),

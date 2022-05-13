@@ -10,29 +10,27 @@ public struct BreakoutCollisionReducer: Reducer {
         environment: Void
     ) -> BreakoutGameEffect {
         var effects: [BreakoutGameEffect] = []
-        for (entityId, entity) in state.entities.entities {
+        ballLoop: for (entityId, entity) in state.entities.entities {
             guard entity.tags.contains("ball"),
                   let transform = state.transform[entityId],
-                  var momentum = state.momentum[entityId],
-                  let shape = state.shape[entityId] else { continue }
+                  var momentum = state.momentum[entityId] else { continue }
 
-            for (otherEntityId, otherEntity) in state.entities.entities {
+            collidableLoop: for (otherEntityId, otherEntity) in state.entities.entities {
                 guard !otherEntity.tags.contains("ball"),
                       let otherTransform = state.transform[otherEntityId],
                       let otherShape = state.shape[otherEntityId] else { continue }
-                
                 switch otherShape.shape {
                 case .rect:
                     break
                 case .circle:
                     break
                 case .polygon(let polygon):
-                    let c = Circle(center: transform.position, radius: 5)
-                    for line in polygon.lines {
+                    let ballshape = Circle(center: transform.position, radius: BreakoutConstants.ballRadius)
+                    lineLoop: for line in polygon.lines {
                         let positionedLine = line.offset(by: otherTransform.position)
                         // if collision
-                        if positionedLine.intersects(c) {
-                            let diff = c.center - line.offset(by: otherTransform.position).center
+                        if positionedLine.intersects(ballshape) {
+                            let diff = ballshape.center - line.offset(by: otherTransform.position).center
                             
                             //  - calculate new x based on distance
                             if diff.x > 0 {
@@ -48,12 +46,10 @@ public struct BreakoutCollisionReducer: Reducer {
                             if otherEntity.tags.contains("block") {
                                 effects.append(.system(.removeEntity(otherEntityId)))
                             }
-                            break
+                            break collidableLoop
                         }
                     }
                 }
-                
-                
             }
             state.transform[entityId] = transform
             state.momentum[entityId] = momentum

@@ -54,6 +54,19 @@ public class BreakoutGame: WebBrowserWindow {
     
     public override func onWebRendererReady() {
         super.onWebRendererReady()
+        
+        let document = JSObject.global.document
+        var infoElement = document.createElement("div")
+        infoElement.innerHTML = """
+        <h4>About</h4>
+        This game is written in Swift leveraging SwiftWASM.
+        <br /><br />
+        <strong>Instructions</strong>
+        <br /><br />
+        Use left and right keys or tap in the direction you want to move the paddle
+        """
+        _ = document.body.appendChild(infoElement)
+        
         store.sendAction(.newGame)
     }
     
