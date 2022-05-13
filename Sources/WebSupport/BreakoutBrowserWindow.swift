@@ -75,6 +75,12 @@ public class BreakoutGame: WebBrowserWindow {
     }
     
     public override func mouseDown(_ location: Point) {
+        super.mouseDown(location)
+        store.sendAction(.locationInput(location))
+    }
+    
+    public override func touchDown(_ location: Point) {
+        super.touchDown(location)
         store.sendAction(.locationInput(location))
     }
 }
