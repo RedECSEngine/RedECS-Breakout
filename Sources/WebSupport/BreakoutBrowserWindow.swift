@@ -43,7 +43,8 @@ public class BreakoutGame: WebBrowserWindow {
                 .init(keyPath: \.transform),
                 .init(keyPath: \.momentum),
                 .init(keyPath: \.shape),
-                .init(keyPath: \.keyboardInput)
+                .init(keyPath: \.keyboardInput),
+                .init(keyPath: \.operation)
             ]
         )
     }

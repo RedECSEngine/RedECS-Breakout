@@ -16,8 +16,12 @@ public let breakoutCoreReducer: AnyReducer<
     zip(
         BreakoutBoundsReducer(),
         BreakoutInputReducer(),
-        BreakoutCollisionReducer()
+        BreakoutCollisionReducer(),
+        BreakoutGameLogicReducer()
     )
+    
+    + OperationReducer()
+        .pullback(toLocalState: \.operationContext)
     
     + MovementReducer()
         .pullback(toLocalState: \.movementContext)

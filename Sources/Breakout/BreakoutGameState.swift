@@ -17,7 +17,7 @@ public enum BreakoutConstants {
     static let ballSpeed: Double = 2
 }
 
-public struct BreakoutGameState: GameState {
+public struct BreakoutGameState: GameState, OperationCapable {
     public var entities: EntityRepository = .init()
     
     public var shape: [EntityId: ShapeComponent] = [:]
@@ -26,6 +26,9 @@ public struct BreakoutGameState: GameState {
     public var momentum: [EntityId: MomentumComponent] = [:]
     
     public var keyboardInput: [EntityId: KeyboardInputComponent<BreakoutGameAction>] = [:]
+    public var operation: [EntityId: OperationComponent<BreakoutGameAction>] = [:]
+    
+    var lives: Int = 3
     
     var lastDelta: Double = 0
     var lastInputLocation: Point? = nil
@@ -40,6 +43,12 @@ public struct BreakoutGameState: GameState {
      */
     
     public init() {}
+    
+    public mutating func resetProperties() {
+        lives = 3
+        lastDelta = 0
+        lastInputLocation = nil
+    }
 }
 
 public extension BreakoutGameState {
@@ -97,6 +106,17 @@ public extension BreakoutGameState {
         }
         set {
             self.keyboardInput = newValue.keyboardInput
+        }
+    }
+}
+
+public extension BreakoutGameState {
+    var operationContext: OperationComponentContext<BreakoutGameAction> {
+        get {
+            OperationComponentContext(entities: entities, operation: operation)
+        }
+        set {
+            self.operation = newValue.operation
         }
     }
 }
