@@ -24,7 +24,7 @@ public struct BreakoutGameLogicReducer: Reducer {
         case .newGame:
             state.resetProperties()
             return .many([
-                generatePlayer(position: .init(x: 280, y: 10)),
+                generatePlayer(position: .init(x: 240, y: 10)),
                 generateBlocks(),
                 .game(.createNewBall)
             ])

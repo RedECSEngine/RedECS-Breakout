@@ -32,11 +32,10 @@ public struct BreakoutCollisionReducer: Reducer {
                         if positionedLine.intersects(ballshape) {
                             let diff = ballshape.center - line.offset(by: otherTransform.position).center
                             
-                            //  - calculate new x based on distance
-                            if diff.x > 0 {
-                                momentum.velocity.x = 1
-                            } else {
-                                momentum.velocity.x = -1
+                            if line.isHorizontal {
+                                momentum.velocity.x = diff.x / (line.length / 2)
+                            } else if line.isVertical {
+                                momentum.velocity.x = -momentum.velocity.x
                             }
                             
                             if momentum.velocity.y < 0 {
