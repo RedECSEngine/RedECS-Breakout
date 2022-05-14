@@ -44,7 +44,10 @@ public class BreakoutGame: WebBrowserWindow {
                 .init(keyPath: \.momentum),
                 .init(keyPath: \.shape),
                 .init(keyPath: \.keyboardInput),
-                .init(keyPath: \.operation)
+                .init(keyPath: \.operation),
+                .init(keyPath: \.player),
+                .init(keyPath: \.ball),
+                .init(keyPath: \.block),
             ]
         )
     }
@@ -64,7 +67,7 @@ public class BreakoutGame: WebBrowserWindow {
         <br /><br />
         <strong>Instructions</strong>
         <br /><br />
-        Use left and right keys or tap in the direction you want to move the paddle
+        Use left and right keys to move and the up key to fire a paddle
         """
         _ = document.body.appendChild(infoElement)
         

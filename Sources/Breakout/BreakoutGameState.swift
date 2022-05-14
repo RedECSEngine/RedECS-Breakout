@@ -3,18 +3,9 @@ import RedECSBasicComponents
 import RedECSRenderingComponents
 import Geometry
 
-public enum BreakoutConstants {
-    static let screenSize: Size = .init(width: 320, height: 480)
-    
-    static let paddleSize: Size = .init(width: 50, height: 10)
-    static let paddleSpeed: Double = 2
-    
-    static let blockSize: Size = .init(width: 30, height: 10)
-    static let blockRows: Int = 4
-    static let blockCols: Int = 8
-    
-    static let ballRadius: Double = 5
-    static let ballSpeed: Double = 2
+public enum BreakoutGameMode: Equatable, Codable {
+    case normal
+    case wild
 }
 
 public struct BreakoutGameState: GameState, OperationCapable {
@@ -25,9 +16,14 @@ public struct BreakoutGameState: GameState, OperationCapable {
     public var movement: [EntityId: MovementComponent] = [:]
     public var momentum: [EntityId: MomentumComponent] = [:]
     
+    public var player: [EntityId: PlayerComponent] = [:]
+    public var block: [EntityId: BlockComponent] = [:]
+    public var ball: [EntityId: BallComponent] = [:]
+    
     public var keyboardInput: [EntityId: KeyboardInputComponent<BreakoutGameAction>] = [:]
     public var operation: [EntityId: OperationComponent<BreakoutGameAction>] = [:]
     
+    var mode: BreakoutGameMode = .wild
     var lives: Int = 3
     
     var lastDelta: Double = 0
@@ -35,13 +31,6 @@ public struct BreakoutGameState: GameState, OperationCapable {
     
     public var screenSize: Size = BreakoutConstants.screenSize
      
-    /**
-        
-    - collision (proximity interaction)
-    - asteroid positioning safely away from ship
-    - asteroid explode on collision
-     */
-    
     public init() {}
     
     public mutating func resetProperties() {

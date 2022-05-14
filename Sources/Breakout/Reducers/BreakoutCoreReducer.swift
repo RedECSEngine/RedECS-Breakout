@@ -16,13 +16,21 @@ public let breakoutCoreReducer: AnyReducer<
     zip(
         BreakoutBoundsReducer(),
         BreakoutInputReducer(),
-        BreakoutCollisionReducer(),
-        BreakoutGameLogicReducer()
+        BlockCollisionReducer(),
+        PlayerCollisionReducer(),
+        BreakoutGameLogicReducer(),
+        
+        // Wild mode-only reducers
+        zip(
+            WildModeDeflectileFiringReducer(),
+            WildModeCollisionReducer(),
+            WildModeBallFiringReducer().throttle(300)
+        )
+        .filter({ state, action in state.mode == .wild })
     )
     
     + OperationReducer()
         .pullback(toLocalState: \.operationContext)
-    
     + MovementReducer()
         .pullback(toLocalState: \.movementContext)
     + MomentumReducer()

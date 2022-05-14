@@ -11,7 +11,7 @@ public struct BreakoutInputReducer: Reducer {
         environment: Void
     ) -> GameEffect<BreakoutGameState, BreakoutGameAction> {
         guard let location = state.lastInputLocation,
-                let playerPosition = state.transform["player"]?.position else {
+                let playerPosition = state.transform[BreakoutConstants.playerId]?.position else {
             return .none
         }
         
@@ -34,13 +34,13 @@ public struct BreakoutInputReducer: Reducer {
     ) -> GameEffect<BreakoutGameState, BreakoutGameAction> {
         switch action {
         case .moveLeft:
-            guard var playerMovement = state.movement["player"] else { break }
+            guard var playerMovement = state.movement[BreakoutConstants.playerId] else { break }
             playerMovement.velocity.x -= 1
-            state.movement["player"] = playerMovement
+            state.movement[BreakoutConstants.playerId] = playerMovement
         case .moveRight:
-            guard var playerMovement = state.movement["player"] else { break }
+            guard var playerMovement = state.movement[BreakoutConstants.playerId] else { break }
             playerMovement.velocity.x += 1
-            state.movement["player"] = playerMovement
+            state.movement[BreakoutConstants.playerId] = playerMovement
         case .keyboardInput:
             state.lastInputLocation = nil
             return .none

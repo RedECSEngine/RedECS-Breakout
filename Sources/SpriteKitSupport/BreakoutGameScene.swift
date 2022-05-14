@@ -45,7 +45,10 @@ public class BreakoutGameScene: SKScene {
                 .init(keyPath: \.momentum),
                 .init(keyPath: \.shape),
                 .init(keyPath: \.keyboardInput),
-                .init(keyPath: \.operation)
+                .init(keyPath: \.operation),
+                .init(keyPath: \.player),
+                .init(keyPath: \.ball),
+                .init(keyPath: \.block),
             ]
         )
         

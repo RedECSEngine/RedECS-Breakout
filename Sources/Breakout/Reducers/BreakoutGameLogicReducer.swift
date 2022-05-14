@@ -24,34 +24,37 @@ public struct BreakoutGameLogicReducer: Reducer {
         case .newGame:
             state.resetProperties()
             return .many([
-                generatePlayer(position: .init(x: 240, y: 10)),
+                generatePlayer(position: .init(x: 241, y: 10)),
                 generateBlocks(),
-                .game(.createNewBall)
+                .game(state.mode == .wild ? .noop : .createNewBallDefault)
             ])
-        case .createNewBall:
+        case .createNewBall(let position, let velocity):
             return .many([
-                generateBall(position: .init(x: 240, y: 240), velocity: .init(x: 0, y: -1))
+                generateBall(position: position, velocity: velocity)
             ])
         case .ballDied(let ballId):
             state.lives -= 1
-            if state.lives <= 0 {
+            guard state.lives <= 0 else {
                 return .many([
                     .system(.removeEntity(ballId)),
-                    .system(.removeEntity("player")),
-                    .operation(.wait(100), then: .reset),
-                    .operation(.wait(300), then: .newGame),
+                    state.mode == .normal ? .operation(.wait(200), then: .createNewBallDefault) : .none
                 ])
-            } else {
+            }
+            if state.lives == 0 {
                 return .many([
                     .system(.removeEntity(ballId)),
-                    .operation(.wait(200), then: .createNewBall)
+                    .system(.removeEntity(BreakoutConstants.playerId)),
+                    .operation(.wait(100), then: .reset)
+                ])
+            } else { // cleanup after game over
+                return .many([
+                    .system(.removeEntity(ballId))
                 ])
             }
         case .reset:
             return .many(state.entities.entities.compactMap { (id, entity) in
-                guard !entity.tags.contains("operation") else { return nil }
                 return .system(.removeEntity(id))
-            })
+            } + [.operation(.wait(300), then: .newGame)])
         default:
             break
         }
@@ -60,7 +63,7 @@ public struct BreakoutGameLogicReducer: Reducer {
 }
 
 func generatePlayer(position: Point) -> BreakoutGameEffect {
-    let playerId: EntityId = "player"
+    let playerId: EntityId = BreakoutConstants.playerId
     let shape = ShapeComponent(
         entity: playerId,
         shape: .polygon(Path(points: [
@@ -77,10 +80,12 @@ func generatePlayer(position: Point) -> BreakoutGameEffect {
         keyMap: [
             ([.a, .leftKey], .moveLeft),
             ([.d, .rightKey], .moveRight),
+            ([.w, .upKey], .fireDeflectileFromCurrentPlayerPosition)
         ]
     )
     return .many([
         .system(.addEntity(playerId, [])),
+        .system(.addComponent(PlayerComponent(entity: playerId), into: \.player)),
         .system(.addComponent(shape, into: \.shape)),
         .system(.addComponent(transform, into: \.transform)),
         .system(.addComponent(movement, into: \.movement)),
@@ -117,7 +122,8 @@ func generateBlocks() -> BreakoutGameEffect {
             effects.append(.many([
                 .system(.addEntity(blockId, ["block"])),
                 .system(.addComponent(shape, into: \.shape)),
-                .system(.addComponent(transform, into: \.transform))
+                .system(.addComponent(transform, into: \.transform)),
+                .system(.addComponent(BlockComponent(entity: blockId, lives: 1), into: \.block)),
             ]))
         }
     }
@@ -125,11 +131,12 @@ func generateBlocks() -> BreakoutGameEffect {
 }
 
 func generateBall(position: Point, velocity: Point) -> BreakoutGameEffect {
-    let ballId: EntityId = "\(Int.random(in: 1..<Int.max))ball"
+    let ballId: EntityId = newEntityId(prefix: "ball")
+    let ball = BallComponent(entity: ballId)
     let shape = ShapeComponent(
         entity: ballId,
         shape: .circle(.init(radius: BreakoutConstants.ballRadius)),
-        fillColor: .red
+        fillColor: .colorForLives(ball.lives)
     )
     let transform = TransformComponent(
         entity: ballId,
@@ -146,6 +153,7 @@ func generateBall(position: Point, velocity: Point) -> BreakoutGameEffect {
         .system(.addComponent(shape, into: \.shape)),
         .system(.addComponent(transform, into: \.transform)),
         .system(.addComponent(movement, into: \.movement)),
-        .system(.addComponent(momentum, into: \.momentum))
+        .system(.addComponent(momentum, into: \.momentum)),
+        .system(.addComponent(ball, into: \.ball)),
     ])
 }
