@@ -52,17 +52,22 @@ public struct BreakoutInputReducer: Reducer {
             
         case .hud(let hudAction):
             switch hudAction {
-            case .elementTapped(let element):
+            case .onHUDElementInputDown(let element):
                 switch element {
                 case .score, .lives: break
                 case .leftButton:
-                    return .game(.moveLeft)
+                    return .game(.keyboardInput(.keyDown(.leftKey)))
                 case .rightButton:
-                    return .game(.moveRight)
+                    return .game(.keyboardInput(.keyDown(.rightKey)))
                 case .shootButton:
                     return .game(.fireDeflectileFromCurrentPlayerPosition)
                 }
-            case .input:
+            case .inputUp: // on any raw input up, no hud processing
+                return .many([
+                    .game(.keyboardInput(.keyUp(.leftKey))),
+                    .game(.keyboardInput(.keyUp(.rightKey))),
+                ])
+            case .inputDown:
                 break
             }
         default:

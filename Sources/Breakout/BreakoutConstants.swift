@@ -16,7 +16,7 @@ public enum BreakoutConstants {
     static let blockCols: Int = 8
     
     static let ballRadius: Double = 5
-    static let ballSpeed: Double = 2
+    static let ballSpeed: Double = 1.5
     
     static let blockPoints = 2
     static let deflectileCost = 1
