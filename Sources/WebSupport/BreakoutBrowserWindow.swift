@@ -77,12 +77,16 @@ public class BreakoutGame: WebBrowserWindow {
         let document = JSObject.global.document
         var infoElement = document.createElement("div")
         infoElement.innerHTML = """
-        <h4>About</h4>
-        This game is written in Swift leveraging SwiftWASM.
-        <br /><br />
-        <strong>Instructions</strong>
-        <br /><br />
+        <h4>Instructions</h4>
         Use left and right keys to move and the up key to fire a paddle
+        <h4>About Wild Breakout</h4>
+        This game is written in Swift leveraging SwiftWASM. It was developed
+        over a weekend for Toronto Game Jam 2022.
+        <br />
+        <br />
+        <a target="blank" href="https://pyrus.io/2021/05/15/gaming-with-swiftwasm.html">Blog Entry</a>
+        <br />
+        <a target="blank" href="https://github.com/RedECSEngine/RedECS-Breakout">Github Code</a>
         """
         _ = document.body.appendChild(infoElement)
         

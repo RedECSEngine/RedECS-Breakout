@@ -19,8 +19,7 @@ let package = Package(
         .executable(name: "WebSupport", targets: ["WebSupport"])
     ],
     dependencies: [
-        .package(name: "RedECS", path: "../RedECS"),
-//        .package(name: "RedECS", url: "https://github.com/RedECSEngine/RedECS.git", from: "0.0.2"),
+        .package(url: "https://github.com/RedECSEngine/RedECS.git", from: "0.0.3"),
         .package(url: "https://github.com/apple/swift-numerics.git", from: "0.0.1"),
         .package(url: "https://github.com/swiftwasm/JavaScriptKit", from: "0.13.0")
     ],

@@ -1,12 +1,30 @@
 {
   "pins" : [
     {
+      "identity" : "geometry",
+      "kind" : "remoteSourceControl",
+      "location" : "git@github.com:RedECSEngine/Geometry.git",
+      "state" : {
+        "revision" : "e4eaa3d403dc5147f492d8d50956ae2a202547b4",
+        "version" : "0.0.3"
+      }
+    },
+    {
       "identity" : "javascriptkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftwasm/JavaScriptKit",
       "state" : {
         "revision" : "9a3b7d5f316e6d1709bd25e3e0392efca357f525",
         "version" : "0.14.0"
+      }
+    },
+    {
+      "identity" : "redecs",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RedECSEngine/RedECS.git",
+      "state" : {
+        "revision" : "d0ab699e8978d7136da5583d76c2dc9b4ff64f97",
+        "version" : "0.0.3"
       }
     },
     {
