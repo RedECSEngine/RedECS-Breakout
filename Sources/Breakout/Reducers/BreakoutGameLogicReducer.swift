@@ -24,7 +24,8 @@ public struct BreakoutGameLogicReducer: Reducer {
         case .newGame:
             state.resetProperties()
             return .many([
-                generatePlayer(position: .init(x: 241, y: 10)),
+                createUI(),
+                generatePlayer(position: .init(x: 241, y: 64)),
                 generateBlocks(),
                 .game(state.mode == .wild ? .noop : .createNewBallDefault)
             ])
@@ -60,6 +61,106 @@ public struct BreakoutGameLogicReducer: Reducer {
         }
         return .none
     }
+}
+
+public struct BreakoutHUDFormatter: HUDElementFormattable, Codable {
+    public enum BreakoutHUDElement: Codable {
+        case lives
+        case score
+        
+        case leftButton
+        case rightButton
+        case shootButton
+    }
+    public func format(_ elementId: BreakoutHUDElement, _ state: BreakoutGameState) -> String {
+        switch elementId {
+        case .lives:
+            return "Lives: \(state.lives)"
+        case .score:
+            return "Score: \(state.score)"
+        case .leftButton:
+            return "Left"
+        case .rightButton:
+            return "Right"
+        case .shootButton:
+            return "Shoot"
+        }
+    }
+}
+
+func createUI() -> BreakoutGameEffect {
+    let hud = HUDComponent<BreakoutHUDFormatter>(
+        entity: "hud",
+        children: [
+            .init(
+                id: .score,
+                position: .init(x: 0, y: 0),
+                type: .label(HUDLabel(
+                    size: 18,
+                    strategy: .dynamic(BreakoutHUDFormatter())
+                ))
+            ),
+            .init(
+                id: .lives,
+                position: .init(x: BreakoutConstants.screenSize.width - 100, y: 0),
+                type: .label(HUDLabel(
+                    size: 18,
+                    strategy: .dynamic(BreakoutHUDFormatter())
+                ))
+            ),
+            .init(
+                id: .leftButton,
+                position: .init(
+                    x: 12,
+                    y: BreakoutConstants.screenSize.height - 46
+                ),
+                type: .button(HUDButton(
+                    shape: .polygon(.init(points: [
+                        Point(x: 16, y: 0),
+                        Point(x:  0, y: 17),
+                        Point(x: 16, y: 34),
+                        Point(x: 16, y: 22),
+                        Point(x: 40, y: 22),
+                        Point(x: 40, y: 12),
+                        Point(x: 16, y: 12),
+                    ])),
+                    fillColor: .red
+                ))
+            ),
+            .init(
+                id: .rightButton,
+                position: .init(
+                    x: 64,
+                    y: BreakoutConstants.screenSize.height - 46
+                ),
+                type: .button(HUDButton(
+                    shape: .polygon(.init(points: [
+                        Point(x: 24, y: 0),
+                        Point(x: 40, y: 17),
+                        Point(x: 24, y: 34),
+                        
+                        Point(x: 24, y: 22),
+                        Point(x: 0, y: 22),
+                        Point(x: 0, y: 12),
+                        Point(x: 24, y: 12),
+                    ])),
+                    fillColor: .red
+                ))
+            ),
+            .init(
+                id: .shootButton,
+                position: .init(
+                    x: BreakoutConstants.screenSize.width - 36,
+                    y: BreakoutConstants.screenSize.height - 36
+                ),
+                type: .button(HUDButton(
+                    shape: .circle(Circle(center: .zero, radius: 24)),
+                    fillColor: .red
+                ))
+            ),
+        ]
+    )
+    return .system(.addComponent(hud, into: \.hud))
 }
 
 func generatePlayer(position: Point) -> BreakoutGameEffect {
@@ -116,7 +217,7 @@ func generateBlocks() -> BreakoutGameEffect {
                 entity: blockId,
                 position: Point(
                     x: 5 + Double(col) * (blockWidth + space),
-                    y: Double(row * 20) + 400
+                    y: Double(row * 20) + 390
                 )
             )
             effects.append(.many([

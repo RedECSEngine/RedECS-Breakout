@@ -15,6 +15,20 @@ let breakoutWebReducer: AnyBreakoutWebReducer = (
         toGlobalAction: { $0 },
         toLocalEnvironment: { _ in () }
     )
+    + WebHUDRenderingReducer<BreakoutGameState>()
+        .pullback(
+            toLocalState: \.self,
+            toLocalAction: { globalAction in
+                switch globalAction {
+                case .hud(let action):
+                    return action
+                default: break
+                }
+                return .none
+            },
+            toGlobalAction: { .hud($0) },
+            toLocalEnvironment: { $0 as WebRenderingEnvironment }
+        )
     + WebShapeRenderingReducer()
         .pullback(toLocalState: \.shapeContext, toLocalEnvironment: { $0 as WebRenderingEnvironment })
 ).eraseToAnyReducer()
@@ -43,6 +57,7 @@ public class BreakoutGame: WebBrowserWindow {
                 .init(keyPath: \.transform),
                 .init(keyPath: \.momentum),
                 .init(keyPath: \.shape),
+                .init(keyPath: \.hud),
                 .init(keyPath: \.keyboardInput),
                 .init(keyPath: \.operation),
                 .init(keyPath: \.player),
@@ -93,11 +108,11 @@ public class BreakoutGame: WebBrowserWindow {
     
     public override func mouseDown(_ location: Point) {
         super.mouseDown(location)
-        store.sendAction(.locationInput(location))
+        store.sendAction(.hud(.input(location)))
     }
     
     public override func touchDown(_ location: Point) {
         super.touchDown(location)
-        store.sendAction(.locationInput(location))
+        store.sendAction(.hud(.input(location)))
     }
 }

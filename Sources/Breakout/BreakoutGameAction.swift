@@ -1,6 +1,7 @@
 import RedECS
 import RedECSBasicComponents
 import Geometry
+import RedECSRenderingComponents
 
 public enum BreakoutGameAction: Equatable & Codable {
     
@@ -12,6 +13,8 @@ public enum BreakoutGameAction: Equatable & Codable {
     case reset
     case noop
     
+    // HUD
+    case hud(HUDAction<BreakoutHUDFormatter>)
     
     // Input
     case keyboardInput(KeyboardInputAction)

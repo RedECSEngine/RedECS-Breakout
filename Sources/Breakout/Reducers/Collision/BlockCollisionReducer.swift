@@ -34,6 +34,7 @@ public struct BlockCollisionReducer: Reducer {
                 if didCollide {
                     var block = block // prepare to mutate the block we are iterating over
                     block.lives -= 1
+                    state.score += BreakoutConstants.blockPoints
                     if block.lives <= 0 {
                         effects.append(.system(.removeEntity(blockId)))
                     }

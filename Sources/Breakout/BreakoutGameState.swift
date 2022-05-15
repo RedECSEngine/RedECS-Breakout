@@ -8,7 +8,7 @@ public enum BreakoutGameMode: Equatable, Codable {
     case wild
 }
 
-public struct BreakoutGameState: GameState, OperationCapable {
+public struct BreakoutGameState: GameState, OperationCapable, HUDRenderingCapable {
     public var entities: EntityRepository = .init()
     
     public var shape: [EntityId: ShapeComponent] = [:]
@@ -20,14 +20,16 @@ public struct BreakoutGameState: GameState, OperationCapable {
     public var block: [EntityId: BlockComponent] = [:]
     public var ball: [EntityId: BallComponent] = [:]
     
+    public var hud: [EntityId: HUDComponent<BreakoutHUDFormatter>] = [:]
     public var keyboardInput: [EntityId: KeyboardInputComponent<BreakoutGameAction>] = [:]
     public var operation: [EntityId: OperationComponent<BreakoutGameAction>] = [:]
     
     var mode: BreakoutGameMode = .wild
     var lives: Int = 3
+    var score: Int = 0
     
     var lastDelta: Double = 0
-    var lastInputLocation: Point? = nil
+//    var lastInputLocation: Point? = nil
     
     public var screenSize: Size = BreakoutConstants.screenSize
      
@@ -35,8 +37,9 @@ public struct BreakoutGameState: GameState, OperationCapable {
     
     public mutating func resetProperties() {
         lives = 3
+        score = 0
         lastDelta = 0
-        lastInputLocation = nil
+//        lastInputLocation = nil
     }
 }
 

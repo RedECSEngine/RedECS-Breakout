@@ -28,6 +28,7 @@ public struct WildModeDeflectileFiringReducer: Reducer {
                   let transform = state.transform[BreakoutConstants.playerId] else {
                 return .none
             }
+            state.score -= BreakoutConstants.deflectileCost
             state.player[BreakoutConstants.playerId]?.projectileTimeout = 0
             return .game(.fireDeflectile(position: transform.position, velocity: .init(x: 0, y: 0.75)))
         case .fireDeflectile(let position, let velocity):

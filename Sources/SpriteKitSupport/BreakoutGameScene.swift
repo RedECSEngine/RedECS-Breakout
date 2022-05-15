@@ -44,6 +44,7 @@ public class BreakoutGameScene: SKScene {
                 .init(keyPath: \.transform),
                 .init(keyPath: \.momentum),
                 .init(keyPath: \.shape),
+                .init(keyPath: \.hud),
                 .init(keyPath: \.keyboardInput),
                 .init(keyPath: \.operation),
                 .init(keyPath: \.player),
@@ -51,7 +52,6 @@ public class BreakoutGameScene: SKScene {
                 .init(keyPath: \.block),
             ]
         )
-        
         store.sendAction(.newGame)
     }
     
