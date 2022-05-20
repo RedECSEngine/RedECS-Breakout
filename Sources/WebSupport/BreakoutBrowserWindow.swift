@@ -80,7 +80,7 @@ public class BreakoutGame: WebBrowserWindow {
         <h4>Instructions</h4>
         Use left and right keys to move and the up key to fire a paddle
         <h4>About Wild Breakout</h4>
-        This game is written in Swift leveraging SwiftWASM. It was developed
+        This game is written in Swift leveraging SwiftWasm. It was developed
         over a weekend for Toronto Game Jam 2022.
         <br />
         <br />
